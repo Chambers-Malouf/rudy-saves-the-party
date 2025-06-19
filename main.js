@@ -7,6 +7,7 @@ kaboom({
 });
 
 // === Load sprites ===
+loadSprite("start-screen","assets/start-screen.png")
 loadSprite("ann-room", "rooms/ann-room.png");
 loadSprite("hallway", "rooms/hallway.png");
 loadSprite("rudy-right-1", "Rudy/walk-right/rudy-walk-right1.png");
@@ -45,21 +46,20 @@ function showBubble(msg, posRef) {
 
 // === Starting Screen ===
 scene("start", () => {
+  // Background start screen image (1024x1024 scaled down)
   add([
-    text("Rudy Saves the Party", {
-      size: 36,
-      width: width() - 40,
-      align: "center",
-    }),
-    pos(center().x, 100),
-    anchor("center"),
+    sprite("start-screen"),
+    pos(0, 0),
+    scale(width() / 1024, height() / 1024),
   ]);
 
+  // Invisible clickable button placed over the "START GAME" part
   const startBtn = add([
-    text("▶ Start Game", { size: 24 }),
-    pos(center().x, center().y + 40),
     area(),
+    rect(250, 60),                    // matches the black button size
+    pos(center().x, 415),             // vertical position aligned with image
     anchor("center"),
+    opacity(0),
     "start-button",
   ]);
 
@@ -115,7 +115,7 @@ scene("ann-room", () => {
     pos(165, 60),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     "bathroom-door",
   ]);
   // === top wall collider
