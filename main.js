@@ -12,6 +12,37 @@ loadSprite("hallway", "rooms/hallway.png");
 loadSprite("rudy-right-1", "Rudy/walk-right/rudy-walk-right1.png");
 loadSprite("rudy-right-2", "Rudy/walk-right/rudy-walk-right2.png");
 
+// === text bubbles ===
+function showBubble(msg, posRef) {
+  const padding = 8;
+  const textSize = 16;
+  const textWidth = 200;
+
+  const txt = add([
+    text(msg, { size: textSize, width: textWidth }),
+    pos(posRef.x, posRef.y - 40),
+    anchor("center"),
+    z(101),
+    color(255, 255, 255),
+    "bubble",
+  ]);
+
+  const bg = add([
+    rect(txt.width + padding * 2, txt.height + padding * 2),
+    pos(txt.pos.x, txt.pos.y),
+    anchor("center"),
+    color(0, 0, 0),
+    z(100),
+    opacity(0.8),
+    "bubble",
+  ]);
+
+  wait(2, () => {
+    destroy(txt);
+    destroy(bg);
+  });
+}
+
 // === Starting Screen ===
 scene("start", () => {
   add([
@@ -61,12 +92,14 @@ scene("ann-room", () => {
 
   // === bed collider
   add([
-    rect(150, 90),
-    pos(0, 185),
+    rect(20, 100),
+    pos(0, 165),
     area(),
     body({ isStatic: true }),
-    z(-1),
+    color(255,0,0),
+    "bed",
   ]);
+
   // === table collider
   add([
     rect(85, 40),
@@ -74,15 +107,24 @@ scene("ann-room", () => {
     area(),
     body({ isStatic: true }),
     z(-1),
+    "table",
+  ]);
+  // === bathroom door collider
+  add([
+    rect(20, 20),
+    pos(165, 60),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    "bathroom-door",
   ]);
   // === top wall collider
   add([
     rect(640, 10),
-    pos(0, 70),
+    pos(0, 60),
     area(),
     body({ isStatic: true }),
     z(-1),
-
   ]);
   // === bottom wall collider
   add([
@@ -125,6 +167,19 @@ scene("ann-room", () => {
     z(-1),
     "door", 
   ]);
+
+  onKeyPress("space", () => {
+  const bed = get("bed")[0];
+  if (bed && rudy.pos.dist(bed.pos) < 150) {
+    showBubble("I wonder where Goatie is?", rudy.pos);
+  }
+});
+onKeyPress("space", () => {
+  const bed = get("bathroom-door")[0];
+  if (bed && rudy.pos.dist(bed.pos) < 30) {
+    showBubble("I should explore the rest of the house instead", rudy.pos);
+  }
+});
 
   onCollide("rudy", "door", () => {
     go("hallway");
