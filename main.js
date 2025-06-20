@@ -11,6 +11,9 @@ loadSprite("start-screen","assets/start-screen.png")
 loadSprite("ann-room", "rooms/ann-room.png");
 loadSprite("hallway", "rooms/hallway.png");
 loadSprite("living-room", "rooms/living-room.png");
+loadSprite("movie-room", "rooms/movie-room.png");
+loadSprite("kitchen", "rooms/kitchen.png");
+loadSprite("backyard", "rooms/backyard.png");
 loadSprite("rudy-right-1", "Rudy/walk-right/rudy-walk-right1.png");
 loadSprite("rudy-right-2", "Rudy/walk-right/rudy-walk-right2.png");
 
@@ -175,7 +178,7 @@ scene("ann-room", () => {
 });
 onKeyPress("space", () => {
   const bed = get("bathroom-door")[0];
-  if (bed && rudy.pos.dist(bed.pos) < 30) {
+  if (bed && rudy.pos.dist(bed.pos) < 100) {
     showBubble("I should explore the rest of the house instead", rudy.pos);
   }
 });
@@ -393,11 +396,11 @@ scene("living-room", () => {
   add([
     sprite("living-room"),
     pos(0, 0),
-    scale(width() / 512, height() / 288),
+    scale(width() / 256, height() / 144),
   ]);
 
   const rudy = add([
-    pos(200, 200),
+    pos(100, 100),
     sprite("rudy-right-1"),
     scale(0.1),
     area(),
@@ -405,6 +408,201 @@ scene("living-room", () => {
     "rudy", 
     { flipped: false },
   ]);
+  // === hallway top collider
+  add([
+    rect(100, 10),
+    pos(10, 80),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === hallway bottom collider
+  add([
+    rect(100, 10),
+    pos(10, 200),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === left wall collider
+  add([
+    rect(10, 250),
+    pos(90, 200),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === bottom left collider
+  add([
+    rect(250, 10),
+    pos(90, 445),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === backyard left collider
+  add([
+    rect(10, 50),
+    pos(320, 440),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === left wall collider
+  add([
+    rect(10, 90),
+    pos(90, 0),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === top left collider
+  add([
+    rect(80, 10),
+    pos(100, 30),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === top right collider
+  add([
+    rect(200, 10),
+    pos(320, 30),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === top right right collider
+  add([
+    rect(10, 60),
+    pos(535, 30),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === kitchen top collider
+  add([
+    rect(100, 10),
+    pos(550, 80),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === kitchen bottom collider
+  add([
+    rect(100, 10),
+    pos(550, 200),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === top right right collider
+  add([
+    rect(10, 60),
+    pos(535, 30),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === right wall collider
+  add([
+    rect(10, 90),
+    pos(535, 200),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === right bottom wall collider
+  add([
+    rect(10, 200),
+    pos(535, 300),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // === wine door collider
+  add([
+    rect(10, 10),
+    pos(535, 350),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    "wine-door"
+    ]);
+  // === bottom left collider
+  add([
+    rect(120, 10),
+    pos(450, 445),
+    area(),
+    body({ isStatic: true }),
+    color(255,0,0),
+    ]);
+  // couch collider
+  add([
+    rect(10,60),
+    pos(150,240),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    "couch",
+    ]);
+  // tv collider
+  add([
+    rect(10,60),
+    pos(310,240),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    ]);
+  // hallway collider
+  add([
+    rect(10,60),
+    pos(10,115),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    "hallway-door",
+    ]);
+  // kitchen collider
+  add([
+    rect(10,60),
+    pos(600,115),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    "kitchen-door",
+    ]);
+  // backyard collider
+  add([
+    rect(10,10),
+    pos(385,450),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    "backyard-door",
+    ]);
+  // movie room collider
+  add([
+    rect(10,10),
+    pos(245,15),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    "movie-room-door",
+    ]);
+
+  onCollide("rudy", "hallway-door", () => {
+    go("hallway");
+  });
+  onCollide("rudy", "movie-room-door", () => {
+    go("movie-room");
+  });
+  onCollide("rudy", "kitchen-door", () => {
+    go("kitchen");
+  });
+  onCollide("rudy", "backyard-door", () => {
+    go("backyard");
+  });
   // === movement
   const SPEED = 120;
   let animTimer = 0;
@@ -450,6 +648,12 @@ scene("living-room", () => {
       }
     }
   });
+    onKeyPress("space", () => {
+    const wine = get("wine-door")[0];
+    if (wine && rudy.pos.dist(wine.pos) < 300) {
+        showBubble("I definitely don't need any wine, better check elsewhere.", rudy.pos);
+    } 
+});
 });
 // === End Scene ===
 scene("end", () => {
@@ -460,4 +664,4 @@ scene("end", () => {
 });
 
 // === Start Game ===
-go("start");
+go("living-room");
