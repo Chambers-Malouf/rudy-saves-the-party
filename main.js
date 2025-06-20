@@ -3,7 +3,7 @@ kaboom({
   width: 640,
   height: 480,
   scale: 1,
-  background: [135, 206, 235],
+  background: [0,0,0],
 });
 //layers(["bg", "obj", "ui"], "obj");
 
@@ -20,6 +20,8 @@ loadSprite("rudy-right-1", "Rudy/walk-right/rudy-walk-right1.png");
 loadSprite("rudy-right-2", "Rudy/walk-right/rudy-walk-right2.png");
 loadSprite("balloons", "assets/balloons.png");
 loadSprite("tv-on-stand", "assets/tv-on-stand.png");
+loadSprite("gift","assets/gift.png");
+loadSprite("cake","assets/cake.png");
 
 // === checklist ===
 let checklistUI;
@@ -269,12 +271,37 @@ scene("hallway", () => {
     { flipped: false },
   ]);
   
-  checklistUI = add([
-    text(getChecklistText(), {size:12}),
-    pos(width() - 160, 20),
+const checklistText = getChecklistText();
+const padding = 8;
+
+const tempText = add([
+  text(checklistText, { size: 12 }),
+  pos(width() - 160, 20),
+  fixed(),
+  opacity(0), // hidden temp to get size
+]);
+
+wait(0, () => {
+  add([
+    rect(tempText.width + padding * 2, tempText.height + padding * 2),
+    pos(tempText.pos.x - padding, tempText.pos.y - padding),
+    color(100, 100, 100), // gray box
+    opacity(0.5),
     fixed(),
+    z(99),
+  ]);
+
+  checklistUI = add([
+    text(checklistText, { size: 12 }),
+    pos(tempText.pos),
+    fixed(),
+    color(255, 255, 255),
+    z(100),
     "checklistUI"
-  ])
+  ]);
+
+  destroy(tempText); // cleanup
+});
   // === bottom wall collider
   add([
     rect(250, 10),
@@ -432,19 +459,52 @@ scene("living-room", () => {
     "rudy", 
     { flipped: false },
   ]);
-  checklistUI = add([
-    text(getChecklistText(), {size:12}),
-    pos(width() - 160, 20),
+  const gift = add([
+  sprite("gift"),
+  pos(110, 300), 
+  scale(0.05),
+  area(),
+  "gift"
+  ]);
+
+const checklistText = getChecklistText();
+const padding = 8;
+
+const tempText = add([
+  text(checklistText, { size: 12 }),
+  pos(width() - 160, 20),
+  fixed(),
+  opacity(0), // hidden temp to get size
+]);
+
+wait(0, () => {
+  add([
+    rect(tempText.width + padding * 2, tempText.height + padding * 2),
+    pos(tempText.pos.x - padding, tempText.pos.y - padding),
+    color(100, 100, 100), // gray box
+    opacity(0.5),
     fixed(),
+    z(99),
+  ]);
+
+  checklistUI = add([
+    text(checklistText, { size: 12 }),
+    pos(tempText.pos),
+    fixed(),
+    color(255, 255, 255),
+    z(100),
     "checklistUI"
-  ])
+  ]);
+
+  destroy(tempText); // cleanup
+});
   // === hallway top collider
   add([
     rect(100, 10),
     pos(10, 80),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === hallway bottom collider
   add([
@@ -452,7 +512,7 @@ scene("living-room", () => {
     pos(10, 200),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === left wall collider
   add([
@@ -460,7 +520,7 @@ scene("living-room", () => {
     pos(90, 200),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === bottom left collider
   add([
@@ -468,7 +528,7 @@ scene("living-room", () => {
     pos(90, 445),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === backyard left collider
   add([
@@ -476,7 +536,7 @@ scene("living-room", () => {
     pos(320, 440),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === left wall collider
   add([
@@ -484,7 +544,7 @@ scene("living-room", () => {
     pos(90, 0),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === top left collider
   add([
@@ -492,7 +552,7 @@ scene("living-room", () => {
     pos(100, 30),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === top right collider
   add([
@@ -500,7 +560,7 @@ scene("living-room", () => {
     pos(320, 30),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === top right right collider
   add([
@@ -508,7 +568,7 @@ scene("living-room", () => {
     pos(535, 30),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === kitchen top collider
   add([
@@ -516,7 +576,7 @@ scene("living-room", () => {
     pos(550, 80),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === kitchen bottom collider
   add([
@@ -524,7 +584,7 @@ scene("living-room", () => {
     pos(550, 200),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === top right right collider
   add([
@@ -532,7 +592,7 @@ scene("living-room", () => {
     pos(535, 30),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === right wall collider
   add([
@@ -540,7 +600,7 @@ scene("living-room", () => {
     pos(535, 200),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === right bottom wall collider
   add([
@@ -548,7 +608,7 @@ scene("living-room", () => {
     pos(535, 300),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // === wine door collider
   add([
@@ -556,7 +616,7 @@ scene("living-room", () => {
     pos(535, 350),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     "wine-door"
     ]);
   // === bottom left collider
@@ -565,7 +625,7 @@ scene("living-room", () => {
     pos(450, 445),
     area(),
     body({ isStatic: true }),
-    color(255,0,0),
+    z(-1),
     ]);
   // couch collider
   add([
@@ -573,7 +633,7 @@ scene("living-room", () => {
     pos(150,240),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     "couch",
     ]);
   // tv collider
@@ -582,7 +642,7 @@ scene("living-room", () => {
     pos(310,240),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     ]);
   // hallway collider
   add([
@@ -590,7 +650,7 @@ scene("living-room", () => {
     pos(10,115),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     "hallway-door",
     ]);
   // kitchen collider
@@ -599,7 +659,7 @@ scene("living-room", () => {
     pos(600,115),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     "kitchen-door",
     ]);
   // backyard collider
@@ -608,7 +668,7 @@ scene("living-room", () => {
     pos(385,450),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     "backyard-door",
     ]);
   // movie room collider
@@ -617,7 +677,7 @@ scene("living-room", () => {
     pos(245,15),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     "movie-room-door",
     ]);
 
@@ -633,6 +693,13 @@ scene("living-room", () => {
   onCollide("rudy", "backyard-door", () => {
     go("backyard");
   });
+  onCollide("rudy", "gift", (r, g) => {
+  destroy(g);
+  checklist.gift = true;
+  if (checklistUI) checklistUI.text = getChecklistText();
+  showBubble("Found the gift! 🎁", rudy.pos);
+});
+
   // === movement
   const SPEED = 120;
   let animTimer = 0;
@@ -718,12 +785,37 @@ scene("movie-room", () => {
     scale(-.2,.2),
     "tv-on-stand"
   ]);
-  checklistUI = add([
-    text(getChecklistText(), {size:12}),
-    pos(width() - 160, 20),
+const checklistText = getChecklistText();
+const padding = 8;
+
+const tempText = add([
+  text(checklistText, { size: 12 }),
+  pos(width() - 160, 20),
+  fixed(),
+  opacity(0), // hidden temp to get size
+]);
+
+wait(0, () => {
+  add([
+    rect(tempText.width + padding * 2, tempText.height + padding * 2),
+    pos(tempText.pos.x - padding, tempText.pos.y - padding),
+    color(100, 100, 100), // gray box
+    opacity(0.5),
     fixed(),
+    z(99),
+  ]);
+
+  checklistUI = add([
+    text(checklistText, { size: 12 }),
+    pos(tempText.pos),
+    fixed(),
+    color(255, 255, 255),
+    z(100),
     "checklistUI"
-  ])
+  ]);
+
+  destroy(tempText); // cleanup
+});
 // movie room left collider
   add([
     rect(30,200),
@@ -786,7 +878,7 @@ scene("movie-room", () => {
     pos(265,400),
     area(),
     body({isStatic: true}),
-    color(255,0,0),
+    z(-1),
     "living-room-door",
     ]);
     
@@ -860,6 +952,216 @@ scene("movie-room", () => {
     } 
 });
 });
+// === Kitchen Scene ===
+scene("kitchen", () => {
+  add([
+    sprite("kitchen"),
+    pos(0, 0),
+    scale(width() / 256, height() / 144),
+  ]);
+
+  const rudy = add([
+    pos(100, 170),
+    sprite("rudy-right-1"),
+    scale(0.1),
+    area(),
+    body(),
+    anchor("center"),
+    "rudy", 
+    { flipped: false },
+  ]);
+  const cake = add([
+  sprite("cake"),
+  pos(245, 245), 
+  area(),
+  scale(.05),
+  "cake"
+]);
+
+const checklistText = getChecklistText();
+const padding = 8;
+
+const tempText = add([
+  text(checklistText, { size: 12 }),
+  pos(width() - 160, 20),
+  fixed(),
+  opacity(0), // hidden temp to get size
+]);
+
+wait(0, () => {
+  add([
+    rect(tempText.width + padding * 2, tempText.height + padding * 2),
+    pos(tempText.pos.x - padding, tempText.pos.y - padding),
+    color(100, 100, 100), // gray box
+    opacity(0.5),
+    fixed(),
+    z(99),
+  ]);
+
+  checklistUI = add([
+    text(checklistText, { size: 12 }),
+    pos(tempText.pos),
+    fixed(),
+    color(255, 255, 255),
+    z(100),
+    "checklistUI"
+  ]);
+
+  destroy(tempText); // cleanup
+});
+// living room door collider
+  add([
+    rect(30,30),
+    pos(0,170),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    "living-room-door"
+    ]);
+// fridge collider
+  add([
+    rect(30,30),
+    pos(320,100),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    "fridge"
+    ]);
+// mid left top collider
+  add([
+    rect(80,30),
+    pos(30,90),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left bottom collider
+  add([
+    rect(80,30),
+    pos(10,230),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left bottom collider
+  add([
+    rect(80,30),
+    pos(90,270),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left bottom collider
+  add([
+    rect(30,100),
+    pos(150,270),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left bottom collider
+  add([
+    rect(200,30),
+    pos(200,360),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left bottom collider
+  add([
+    rect(30,300),
+    pos(390,150),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left bottom collider
+  add([
+    rect(30,150),
+    pos(360,60),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// mid left top collider
+  add([
+    rect(500,30),
+    pos(70,40),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+  onKeyPress("space", () => {
+    const fridge= get("fridge")[0];
+    if (fridge && rudy.pos.dist(fridge.pos) < 100) {
+      showBubble("Ann will want some mac and cheese later", rudy.pos);
+    }
+  });
+
+  onCollide("rudy", "living-room-door", () => {
+    go("living-room");
+  });
+  onCollide("rudy", "cake", () => {
+    destroy(cake);
+    checklist.cake = true;
+
+    if (checklistUI) {
+      checklistUI.text = getChecklistText();
+    }
+
+    add([
+      text("Got the Cake", { size: 30 }),
+      pos(rudy.pos.x-30, rudy.pos.y),
+      lifespan(2),
+      color(255, 255, 0),
+    ]);
+  });
+  // === movement
+  const SPEED = 120;
+  let animTimer = 0;
+  let animFrame = 1;
+
+  onUpdate(() => {
+    let moving = false;
+
+    if (isKeyDown("left")) {
+      rudy.move(-SPEED, 0);
+      if (!rudy.flipped) {
+        rudy.scale.x = -Math.abs(rudy.scale.x);
+        rudy.flipped = true;
+      }
+      moving = true;
+    }
+
+    if (isKeyDown("right")) {
+      rudy.move(SPEED, 0);
+      if (rudy.flipped) {
+        rudy.scale.x = Math.abs(rudy.scale.x);
+        rudy.flipped = false;
+      }
+      moving = true;
+    }
+
+    if (isKeyDown("up")) {
+      rudy.move(0, -SPEED);
+      moving = true;
+    }
+
+    if (isKeyDown("down")) {
+      rudy.move(0, SPEED);
+      moving = true;
+    }
+
+    if (moving) {
+      animTimer += dt();
+      if (animTimer >= 0.2) {
+        animFrame = animFrame === 1 ? 2 : 1;
+        rudy.use(sprite(`rudy-right-${animFrame}`));
+        animTimer = 0;
+      }
+    }
+  });
+});
 // === End Scene ===
 scene("end", () => {
   add([
@@ -869,6 +1171,6 @@ scene("end", () => {
 });
 
 // === Start Game ===
-go("movie-room");
+go("kitchen");
 
 
