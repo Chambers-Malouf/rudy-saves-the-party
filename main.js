@@ -5,6 +5,8 @@ kaboom({
   scale: 1,
   background: [135, 206, 235],
 });
+//layers(["bg", "obj", "ui"], "obj");
+
 
 // === Load sprites ===
 loadSprite("start-screen","assets/start-screen.png")
@@ -16,6 +18,23 @@ loadSprite("kitchen", "rooms/kitchen.png");
 loadSprite("backyard", "rooms/backyard.png");
 loadSprite("rudy-right-1", "Rudy/walk-right/rudy-walk-right1.png");
 loadSprite("rudy-right-2", "Rudy/walk-right/rudy-walk-right2.png");
+loadSprite("balloons", "assets/balloons.png");
+loadSprite("tv-on-stand", "assets/tv-on-stand.png");
+
+// === checklist ===
+let checklistUI;
+const checklist = {
+balloons: false,
+cake: false,
+gift: false,
+};
+// === checklist ===
+function getChecklistText() {
+  return `To-Do:
+[${checklist.balloons ? "✔" : " "}] Balloons
+[${checklist.cake ? "✔" : " "}] Cake
+[${checklist.gift ? "✔" : " "}] Gift`;
+}
 
 // === text bubbles ===
 function showBubble(msg, posRef) {
@@ -84,6 +103,7 @@ scene("ann-room", () => {
     scale(0.1),
     area(),
     body(),
+    anchor("center"),
     "rudy", 
     { flipped: false },
   ]);
@@ -174,7 +194,7 @@ scene("ann-room", () => {
 });
 onKeyPress("space", () => {
   const bed = get("bathroom-door")[0];
-  if (bed && rudy.pos.dist(bed.pos) < 100) {
+  if (bed && rudy.pos.dist(bed.pos) < 50) {
     showBubble("I should explore the rest of the house instead", rudy.pos);
   }
 });
@@ -244,10 +264,17 @@ scene("hallway", () => {
     scale(0.1),
     area(),
     body(),
+    anchor("center"),
     "rudy", 
     { flipped: false },
   ]);
-
+  
+  checklistUI = add([
+    text(getChecklistText(), {size:12}),
+    pos(width() - 160, 20),
+    fixed(),
+    "checklistUI"
+  ])
   // === bottom wall collider
   add([
     rect(250, 10),
@@ -401,9 +428,16 @@ scene("living-room", () => {
     scale(0.1),
     area(),
     body(),
+    anchor("center"),
     "rudy", 
     { flipped: false },
   ]);
+  checklistUI = add([
+    text(getChecklistText(), {size:12}),
+    pos(width() - 160, 20),
+    fixed(),
+    "checklistUI"
+  ])
   // === hallway top collider
   add([
     rect(100, 10),
@@ -652,7 +686,7 @@ scene("living-room", () => {
 });
 });
 
-// === Living Room Scene ===
+// === Movie Room Scene ===
 scene("movie-room", () => {
   add([
     sprite("movie-room"),
@@ -666,21 +700,113 @@ scene("movie-room", () => {
     scale(0.1),
     area(),
     body(),
+    anchor("center"),
     "rudy", 
     { flipped: false },
   ]);
-// movie room collider
+  const balloons = add([
+  sprite("balloons"),
+  pos(450, 120), 
+  area(),
+  scale(.1),
+  "balloons"
+]);
+  const tv = add([
+    sprite("tv-on-stand"),
+    pos(550, 135),
+    area(),
+    scale(-.2,.2),
+    "tv-on-stand"
+  ]);
+  checklistUI = add([
+    text(getChecklistText(), {size:12}),
+    pos(width() - 160, 20),
+    fixed(),
+    "checklistUI"
+  ])
+// movie room left collider
   add([
-    rect(10,10),
-    pos(245,15),
+    rect(30,200),
+    pos(205,360),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// movie room right collider
+  add([
+    rect(30,200),
+    pos(365,360),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// bottom right wall collider
+  add([
+    rect(200,10),
+    pos(365,350),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// bottom left wall collider
+  add([
+    rect(150,10),
+    pos(80,350),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// left wall collider
+  add([
+    rect(30,300),
+    pos(45,100),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// top wall collider
+  add([
+    rect(500,30),
+    pos(80,80),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+// right wall collider
+  add([
+    rect(30,300),
+    pos(550,100),
+    area(),
+    body({isStatic: true}),
+    z(-1),
+    ]);
+  // living room door collider
+  add([
+    rect(40,40),
+    pos(265,400),
     area(),
     body({isStatic: true}),
     color(255,0,0),
-    "movie-room-door",
+    "living-room-door",
     ]);
-
+    
   onCollide("rudy", "living-room-door", () => {
     go("living-room");
+  });
+  onCollide("rudy", "balloons", () => {
+    destroy(balloons);
+    checklist.balloons = true;
+
+    if (checklistUI) {
+      checklistUI.text = getChecklistText();
+    }
+
+    add([
+      text("🎈 Got the balloons!", { size: 30 }),
+      pos(rudy.pos.x-30, rudy.pos.y),
+      lifespan(2),
+      color(255, 255, 0),
+    ]);
   });
   // === movement
   const SPEED = 120;
@@ -743,4 +869,6 @@ scene("end", () => {
 });
 
 // === Start Game ===
-go("start");
+go("movie-room");
+
+
