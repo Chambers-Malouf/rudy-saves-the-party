@@ -68,10 +68,6 @@ scene("start", () => {
   startBtn.onClick(() => {
     go("ann-room");
   });
-
-  onKeyPress("space", () => {
-    go("ann-room");
-  });
 });
 
 // === Ann Room Scene ===
@@ -655,6 +651,89 @@ scene("living-room", () => {
     } 
 });
 });
+
+// === Living Room Scene ===
+scene("movie-room", () => {
+  add([
+    sprite("movie-room"),
+    pos(0, 0),
+    scale(width() / 256, height() / 144),
+  ]);
+
+  const rudy = add([
+    pos(250, 250),
+    sprite("rudy-right-1"),
+    scale(0.1),
+    area(),
+    body(),
+    "rudy", 
+    { flipped: false },
+  ]);
+// movie room collider
+  add([
+    rect(10,10),
+    pos(245,15),
+    area(),
+    body({isStatic: true}),
+    color(255,0,0),
+    "movie-room-door",
+    ]);
+
+  onCollide("rudy", "living-room-door", () => {
+    go("living-room");
+  });
+  // === movement
+  const SPEED = 120;
+  let animTimer = 0;
+  let animFrame = 1;
+
+  onUpdate(() => {
+    let moving = false;
+
+    if (isKeyDown("left")) {
+      rudy.move(-SPEED, 0);
+      if (!rudy.flipped) {
+        rudy.scale.x = -Math.abs(rudy.scale.x);
+        rudy.flipped = true;
+      }
+      moving = true;
+    }
+
+    if (isKeyDown("right")) {
+      rudy.move(SPEED, 0);
+      if (rudy.flipped) {
+        rudy.scale.x = Math.abs(rudy.scale.x);
+        rudy.flipped = false;
+      }
+      moving = true;
+    }
+
+    if (isKeyDown("up")) {
+      rudy.move(0, -SPEED);
+      moving = true;
+    }
+
+    if (isKeyDown("down")) {
+      rudy.move(0, SPEED);
+      moving = true;
+    }
+
+    if (moving) {
+      animTimer += dt();
+      if (animTimer >= 0.2) {
+        animFrame = animFrame === 1 ? 2 : 1;
+        rudy.use(sprite(`rudy-right-${animFrame}`));
+        animTimer = 0;
+      }
+    }
+  });
+    onKeyPress("space", () => {
+    const balloons = get("balloons")[0];
+    if (balloons && rudy.pos.dist(balloons.pos) < 300) {
+        showBubble("I got the balloons!", rudy.pos);
+    } 
+});
+});
 // === End Scene ===
 scene("end", () => {
   add([
@@ -664,4 +743,4 @@ scene("end", () => {
 });
 
 // === Start Game ===
-go("living-room");
+go("start");
