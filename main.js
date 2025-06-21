@@ -22,6 +22,9 @@ loadSprite("balloons", "assets/balloons.png");
 loadSprite("tv-on-stand", "assets/tv-on-stand.png");
 loadSprite("gift","assets/gift.png");
 loadSprite("cake","assets/cake.png");
+loadSprite("table-empty", "assets/table-empty.png");
+loadSprite("table-full", "assets/table-full.png");
+loadSprite("final-image","assets/final-image.png");
 
 // === checklist ===
 let checklistUI;
@@ -1162,15 +1165,184 @@ wait(0, () => {
     }
   });
 });
-// === End Scene ===
-scene("end", () => {
+// === Backyard Scene ===
+scene("backyard", () => {
+  // === Background ===
   add([
-    text("Happy Birthday Ann!", { size: 32 }),
-    pos(40, 40),
+    sprite("backyard"),
+    pos(0, 0),
+    scale(width() / 256, height() / 144),
+  ]);
+
+  // === Rudy ===
+  const rudy = add([
+    pos(250, 370),
+    sprite("rudy-right-1"),
+    scale(0.1),
+    area(),
+    body(),
+    anchor("center"),
+    "rudy",
+    { flipped: false },
+  ]);
+
+  // === Checklist UI ===
+  const checklistText = getChecklistText();
+  const padding = 8;
+
+  const tempText = add([
+    text(checklistText, { size: 12 }),
+    pos(width() - 160, 20),
+    fixed(),
+    opacity(0),
+  ]);
+
+  wait(0, () => {
+    add([
+      rect(tempText.width + padding * 2, tempText.height + padding * 2),
+      pos(tempText.pos.x - padding, tempText.pos.y - padding),
+      color(100, 100, 100),
+      opacity(0.5),
+      fixed(),
+      z(99),
+    ]);
+
+    checklistUI = add([
+      text(checklistText, { size: 12 }),
+      pos(tempText.pos),
+      fixed(),
+      color(255, 255, 255),
+      z(100),
+      "checklistUI"
+    ]);
+
+    destroy(tempText);
+  });
+
+  // === Living Room Door Collider ===
+  add([
+    rect(30, 30),
+    pos(310, 430),
+    area(),
+    body({ isStatic: true }),
+    color(255, 0, 0),
+    "living-room-door",
+  ]);
+
+  onCollide("rudy", "living-room-door", () => {
+    go("living-room");
+  });
+
+  // === Table Setup ===
+  let placedPresents = false;
+  const tablePos = vec2(330, 260);
+  let emptyTable = null;
+  let interactionZone = null;
+
+  // Always show empty table on load
+  emptyTable = add([
+    sprite("table-empty"),
+    pos(tablePos),
+    anchor("center"),
+    scale(0.5),
+    area(),
+    "emptyTable",
+  ]);
+
+  interactionZone = add([
+    rect(50, 50),
+    pos(tablePos.sub(25, 25)),
+    area(),
+    opacity(0),
+    "tableInteract",
+  ]);
+
+  // === Interact with table when ready ===
+  onKeyPress("space", () => {
+    if (
+      emptyTable &&
+      !placedPresents &&
+      checklist.balloons &&
+      checklist.cake &&
+      checklist.gift &&
+      rudy.pos.dist(tablePos) < 70
+    ) {
+      destroy(emptyTable);
+      destroy(interactionZone);
+
+      add([
+        sprite("table-full"),
+        pos(tablePos),
+        anchor("center"),
+        scale(0.3),
+        "table-full",
+      ]);
+
+      placedPresents = true;
+
+      wait(10, () => {
+        go("final-image");
+      });
+    }
+  });
+
+  // === Movement Logic ===
+  const SPEED = 120;
+  let animTimer = 0;
+  let animFrame = 1;
+
+  onUpdate(() => {
+    if (checklistUI) checklistUI.text = getChecklistText();
+
+    let moving = false;
+
+    if (isKeyDown("left")) {
+      rudy.move(-SPEED, 0);
+      if (!rudy.flipped) {
+        rudy.scale.x = -Math.abs(rudy.scale.x);
+        rudy.flipped = true;
+      }
+      moving = true;
+    }
+
+    if (isKeyDown("right")) {
+      rudy.move(SPEED, 0);
+      if (rudy.flipped) {
+        rudy.scale.x = Math.abs(rudy.scale.x);
+        rudy.flipped = false;
+      }
+      moving = true;
+    }
+
+    if (isKeyDown("up")) {
+      rudy.move(0, -SPEED);
+      moving = true;
+    }
+
+    if (isKeyDown("down")) {
+      rudy.move(0, SPEED);
+      moving = true;
+    }
+
+    if (moving) {
+      animTimer += dt();
+      if (animTimer >= 0.2) {
+        animFrame = animFrame === 1 ? 2 : 1;
+        rudy.use(sprite(`rudy-right-${animFrame}`));
+        animTimer = 0;
+      }
+    }
+  });
+});
+scene("final-image", () => {
+  // === Background ===
+  add([
+    sprite("final-image"),
+    pos(0, 0),
+    scale(width() / 256, height() / 144),
   ]);
 });
-
 // === Start Game ===
-go("kitchen");
+go("start");
 
 
