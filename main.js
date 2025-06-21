@@ -4,6 +4,7 @@ kaboom({
   height: 480,
   scale: 1,
   background: [0,0,0],
+  crisp:true,
 });
 //layers(["bg", "obj", "ui"], "obj");
 
@@ -35,7 +36,7 @@ gift: false,
 };
 // === checklist ===
 function getChecklistText() {
-  return `To-Do:
+  return `Items Needed:
 [${checklist.balloons ? "✔" : " "}] Balloons
 [${checklist.cake ? "✔" : " "}] Cake
 [${checklist.gift ? "✔" : " "}] Gift`;
@@ -90,6 +91,34 @@ scene("start", () => {
   ]);
 
   startBtn.onClick(() => {
+    go("intro");
+  });
+});
+// === intro scene ===
+scene("intro", () => {
+  add([
+    rect(width(), height()),
+    color(20, 20, 20),
+  ]);
+
+  add([
+    text("Today is Ann's birthday!\nBut we can't find the birthday supplies! \nHelp Rudy collect:\n🎈 Balloons\n🎁 Gift\n🎂 Cake\n\nGrab all the items and put them on the table in the backyard to start the party!", {
+      size: 24,
+      width: width() - 40,
+      lineSpacing: 8,
+    }),
+    pos(30, 80),
+    color(255, 255, 255),
+  ]);
+
+  add([
+    text("Press SPACE to continue", { size: 16 }),
+    pos(width() / 2, height() - 50),
+    anchor("center"),
+    color(200, 200, 200),
+  ]);
+
+  onKeyPress("space", () => {
     go("ann-room");
   });
 });
@@ -1225,14 +1254,87 @@ scene("backyard", () => {
     pos(310, 430),
     area(),
     body({ isStatic: true }),
-    color(255, 0, 0),
+    z(-1),
     "living-room-door",
   ]);
-
+  // === rossi Collider ===
+  add([
+    rect(30, 30),
+    pos(50, 130),
+    area(),
+    body({ isStatic: true }),
+    z(-1),
+    "rossi",
+  ]);
+   // === mom Collider ===
+  add([
+    rect(30, 30),
+    pos(160, 130),
+    area(),
+    body({ isStatic: true }),
+    z(-1),
+    "mom",
+  ]);
+// === chambers Collider ===
+  add([
+    rect(30, 30),
+    pos(300, 130),
+    area(),
+    body({ isStatic: true }),
+    z(-1),
+    "chambers",
+  ]);
+  // === bobby Collider ===
+  add([
+    rect(30, 30),
+    pos(450, 130),
+    area(),
+    body({ isStatic: true }),
+    z(-1),
+    "bobby",
+  ]);
+    // === jake Collider ===
+  add([
+    rect(30, 30),
+    pos(570, 130),
+    area(),
+    body({ isStatic: true }),
+    z(-1),
+    "jake",
+  ]);
   onCollide("rudy", "living-room-door", () => {
     go("living-room");
   });
-
+  onKeyPress("space", () => {
+  const rossi = get("rossi")[0];
+  if (rossi && rudy.pos.dist(rossi.pos) < 100) {
+    showBubble("It's strange seeing Rossi without Owen", rudy.pos);
+  }
+});
+onKeyPress("space", () => {
+  const mom = get("mom")[0];
+  if (mom && rudy.pos.dist(mom.pos) < 100) {
+    showBubble("Mrs. Patterson is so pretty", rudy.pos);
+  }
+});
+onKeyPress("space", () => {
+  const chambers = get("chambers")[0];
+  if (chambers && rudy.pos.dist(chambers.pos) < 100) {
+    showBubble("Wow my dad is so handsome!", rudy.pos);
+  }
+});
+onKeyPress("space", () => {
+  const bobby = get("bobby")[0];
+  if (bobby && rudy.pos.dist(bobby.pos) < 100) {
+    showBubble("Bobby may be the coolest guy I know!", rudy.pos);
+  }
+});
+onKeyPress("space", () => {
+  const jake = get("jake")[0];
+  if (jake && rudy.pos.dist(jake.pos) < 100) {
+    showBubble("Jake's my favorite. he has so many cool books", rudy.pos);
+  }
+});
   // === Table Setup ===
   let placedPresents = false;
   const tablePos = vec2(330, 260);
@@ -1339,10 +1441,15 @@ scene("final-image", () => {
   add([
     sprite("final-image"),
     pos(0, 0),
-    scale(width() / 256, height() / 144),
+    scale(width() / 1536, height() / 1024),
   ]);
+  add([
+  text("From Chambers", { size: 60 }),
+  pos(120, 140),
+  color(255, 0, 0),
+])
+
 });
 // === Start Game ===
 go("start");
-
 
