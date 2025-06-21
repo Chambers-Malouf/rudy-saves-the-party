@@ -102,7 +102,7 @@ scene("intro", () => {
   ]);
 
   add([
-    text("Today is Ann's birthday!\nBut we can't find the birthday supplies! \nHelp Rudy collect:\n🎈 Balloons\n🎁 Gift\n🎂 Cake\n\nGrab all the items and put them on the table in the backyard to start the party!\n interact with items by pressing the space key.", {
+    text("Today is Ann's birthday!\nBut we can't find the birthday supplies! \nHelp Rudy collect:\n🎈 Balloons\n🎁 Gift\n🎂 Cake\n\nGrab all the items and put them on the table in the backyard to start the party!\nInteract with items by pressing the space key.", {
       size: 24,
       width: width() - 40,
       lineSpacing: 8,
